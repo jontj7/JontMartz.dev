@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="es" x-data="{ open: window.innerWidth >= 768, userOpen: false }" class="min-h-screen overflow-x-hidden bg-[#0f172a]">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gerson Berrio – Portafolio</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet" />
+  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" rel="stylesheet">
+
+  <style>
+    [x-cloak] { display: none !important; }
+    body { font-family: 'Fira Code', monospace; }
+    html { scroll-behavior: smooth; }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(ellipse at center, #1e1e2e 0%, #0f172a 100%);
+      z-index: -1;
+      transform: scale(1.1);
+    }
+
+    @keyframes fade-in-left {
+      0% { opacity: 0; transform: translateX(-30px); }
+      100% { opacity: 1; transform: translateX(0); }
+    }
+
+    .animate-fade-in-left {
+      animation: fade-in-left 0.7s ease-in-out;
+    }
+
+    @keyframes ping-slow {
+      0% { transform: scale(1); opacity: 1; }
+      75%, 100% { transform: scale(1.5); opacity: 0; }
+    }
+
+    .animate-ping-slow {
+      animation: ping-slow 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+    }
+
+    @media (max-width: 767px) {
+      main {
+        transition: margin-left 0.5s ease-in-out;
+      }
+
+      #sidebar {
+        position: fixed !important;
+        z-index: 50;
+      }
+    }
+  </style>
+</head>
+
+<body class="text-white bg-[#0f172a] opacity-0 transition-opacity duration-700" x-data="{ open: false }" x-init="open = window.innerWidth >= 768" onload="document.body.classList.remove('opacity-0')">
+
+  <!-- Botón de apertura en móviles -->
+  <button @click="open = true" class="fixed top-4 left-4 z-50 lg:hidden bg-[#1e1e2e] p-3 rounded-full shadow-lg">
+    <i class="fas fa-bars text-xl text-white"></i>
+  </button>
+
+  <!-- Capa oscura móvil -->
+  <div 
+    x-show="open && window.innerWidth 768" @click="open = false"
+    class="fixed inset-0 bg-black/50 z-40 lg:hidden"
+    x-cloak>
+</div>
+
+  <!-- SIDEBAR -->
+  <aside
+    id="sidebar"
+    :class="open ? 'w-64' : 'w-20'"
+    class="fixed top-0 left-0 h-screen bg-gradient-to-b from-[#1a1a2e] via-[#16213e] to-[#0f3460] text-white shadow-2xl flex flex-col justify-between rounded-r-3xl transition-all duration-500 ease-in-out overflow-hidden z-50 animate-fade-in-left"
+  >
+    <!-- TOGGLE -->
+    <div class="p-4 flex items-center justify-between">
+      <span x-show="open" class="text-xl font-bold tracking-wide">Menú</span>
+      <button @click="open = !open" class="text-white text-2xl hover:rotate-90 transition-transform duration-500">
+        <i class="fas" :class="open ? 'fa-times' : 'fa-bars'"></i>
+      </button>
+    </div>
+
+    <!-- NAV -->
+    <nav class="flex-1 px-2 mt-6 space-y-2">
+      <template x-for="item in [
+        { href: '#inicio', icon: 'fa-home', color: 'text-cyan-400', label: 'Inicio' },
+        { href: '#habilidades', icon: 'fa-cogs', color: 'text-lime-400', label: 'Habilidades' },
+        { href: '#proyectos', icon: 'fa-folder-open', color: 'text-purple-400', label: 'Proyectos' },
+        { href: '#sobre-mi', icon: 'fa-user', color: 'text-pink-400', label: 'Sobre mí' },
+        { href: '#contacto', icon: 'fa-envelope', color: 'text-yellow-300', label: 'Contacto' }
+      ]" :key="item.href">
+        <a :href="item.href"
+          @click="window.innerWidth < 768 ? open = false : null"
+          class="group relative flex items-center gap-3 p-3 rounded-xl bg-[#0f172a] hover:bg-[#1a2b4c] transition-all duration-300">
+          <i :class="`fas ${item.icon} text-lg ${item.color} group-hover:text-white`"></i>
+          <span x-show="open" x-transition x-text="item.label"></span>
+          <span x-show="!open" class="absolute left-full ml-2 px-2 py-1 text-xs rounded bg-gray-700 text-white opacity-0 group-hover:opacity-100 transition-opacity" x-text="item.label"></span>
+        </a>
+      </template>
+    </nav>
+
+    <!-- FOOTER -->
+    <div class="p-4 border-t border-white/10 space-y-3">
+      <div class="flex items-center gap-3 relative">
+        <img src="images/avatar.jpg" alt="Avatar" class="w-10 h-10 rounded-full border-2 border-cyan-400 hover:scale-105 transition relative">
+        <span class="absolute right-0 bottom-0 h-3 w-3 rounded-full bg-green-400 animate-ping-slow"></span>
+        <div x-show="open">
+          <p class="text-sm font-bold">Gerson Berrio</p>
+          <p class="text-xs text-gray-400">Front-End Developer</p>
+        </div>
+      </div>
+      <div x-show="open" class="mt-3 flex justify-around text-white text-xl">
+        <a href="https://github.com/jontj7" target="_blank" class="hover:text-purple-400"><i class="fab fa-github"></i></a>
+        <a href="https://linkedin.com/in/jonathan-martinez-23324413a" target="_blank" class="hover:text-blue-400"><i class="fab fa-linkedin"></i></a>
+      </div>
+    </div>
+  </aside>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <main :class="open ? 'ml-64' : 'ml-20'" class="transition-all duration-500 ease-in-out">
+    <!-- Aquí van todas tus secciones como #inicio, #habilidades, #proyectos, etc. -->
+    <!-- Ejemplo de sección de bienvenida -->
+    <section id="inicio" class="min-h-screen flex items-center justify-center px-6 md:px-20 pt-20 pb-10 text-center md:text-left">
+      <div class="max-w-3xl">
+        <div class="bg-[#1e1e2e] border border-[#3b4252] p-6 rounded-lg shadow-lg text-green-400 font-mono text-sm animate-fade-in-up transition-all duration-1000">
+          <pre><code>
+            <span class="text-blue-400">> Bienvenido a mi portafolio</span>
+            <span class="text-yellow-400">Nombre:</span> Gerson Jonathan Berrio Martínez
+            <span class="text-yellow-400">Rol:</span> Desarrollador Front-End
+            <span class="text-yellow-400">Stack:</span> React, Tailwind, JavaScript
+            <span class="text-yellow-400">Correo:</span> jont_martinez@outlook.com
+            <span class="text-yellow-400">LinkedIn:</span> linkedin.com/in/jonathan-martinez-23324413a/
+          </code></pre>
+        </div>
+        <div class="flex flex-wrap justify-center md:justify-start gap-4 mt-6">
+          <a href="#proyectos" class="bg-[#1f2937] border border-green-400 text-green-300 px-6 py-2 rounded-md shadow hover:bg-green-500 hover:text-black transition-all">
+            <i class="fas fa-terminal mr-2"></i>Ver Proyectos
+          </a>
+          <a href="mailto:jont_martinez@outlook.com" class="bg-[#1f2937] border border-blue-400 text-blue-300 px-6 py-2 rounded-md shadow hover:bg-blue-500 hover:text-black transition-all">
+            <i class="fas fa-paper-plane mr-2"></i>Contáctame
+          </a>
+          <a href="cv/CV_Gerson_Berrio_ES.pdf" download class="bg-[#1f2937] border border-yellow-400 text-yellow-300 px-6 py-2 rounded-md shadow hover:bg-yellow-400 hover:text-black transition-all">
+            <i class="fas fa-file-download mr-2"></i>CV Español
+          </a>
+          <a href="cv/CV_Gerson_Berrio_EN.pdf" download class="bg-[#1f2937] border border-purple-400 text-purple-300 px-6 py-2 rounded-md shadow hover:bg-purple-400 hover:text-black transition-all">
+            <i class="fas fa-file-download mr-2"></i>CV Inglés
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Agrega aquí tus secciones siguientes: habilidades, proyectos, contacto, etc. -->
+
+    <!-- HABILIDADES -->
+<section id="habilidades" class="scroll-mt-24 py-20  px-6 md:px-20 bg-[#111827]" data-aos="fade-up">
+  <div class="max-w-5xl mx-auto">
+    <h2 class="text-3xl font-bold text-center text-green-400 mb-10" data-aos="fade-down">⚙️ Habilidades</h2>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6" data-aos="zoom-in-up" data-aos-delay="200">
+      <!-- Habilidad -->
+      <div class="bg-[#1f2937] border border-green-400 rounded-lg p-5 shadow hover:scale-105 transition-all duration-300">
+        <i class="fab fa-html5 text-4xl text-orange-500 mb-3"></i>
+        <h3 class="text-xl font-semibold mb-1">HTML5</h3>
+        <p class="text-sm text-gray-300">Maquetado semántico, etiquetas modernas y accesibilidad.</p>
+      </div>
+
+      <!-- Habilidad -->
+      <div class="bg-[#1f2937] border border-cyan-400 rounded-lg p-5 shadow hover:scale-105 transition-all duration-300">
+        <i class="fab fa-css3-alt text-4xl text-blue-400 mb-3"></i>
+        <h3 class="text-xl font-semibold mb-1">CSS3 / Tailwind</h3>
+        <p class="text-sm text-gray-300">Estilos responsive, animaciones y diseño utilitario.</p>
+      </div>
+
+      <!-- Habilidad -->
+      <div class="bg-[#1f2937] border border-yellow-400 rounded-lg p-5 shadow hover:scale-105 transition-all duration-300">
+        <i class="fab fa-js-square text-4xl text-yellow-300 mb-3"></i>
+        <h3 class="text-xl font-semibold mb-1">JavaScript</h3>
+        <p class="text-sm text-gray-300">Manipulación DOM, eventos, funciones y lógica interactiva.</p>
+      </div>
+
+      <!-- Habilidad -->
+      <div class="bg-[#1f2937] border border-sky-400 rounded-lg p-5 shadow hover:scale-105 transition-all duration-300">
+        <i class="fab fa-react text-4xl text-cyan-300 mb-3"></i>
+        <h3 class="text-xl font-semibold mb-1">React JS</h3>
+        <p class="text-sm text-gray-300">Componentes, hooks, props, estado y SPA.</p>
+      </div>
+
+      <!-- Habilidad -->
+      <div class="bg-[#1f2937] border border-purple-400 rounded-lg p-5 shadow hover:scale-105 transition-all duration-300">
+        <i class="fas fa-database text-4xl text-purple-300 mb-3"></i>
+        <h3 class="text-xl font-semibold mb-1">Base de Datos</h3>
+        <p class="text-sm text-gray-300">MySQL, Firebase, relaciones, CRUD, autenticación.</p>
+      </div>
+
+      <!-- Habilidad -->
+      <div class="bg-[#1f2937] border border-pink-400 rounded-lg p-5 shadow hover:scale-105 transition-all duration-300">
+        <i class="fas fa-code text-4xl text-pink-300 mb-3"></i>
+        <h3 class="text-xl font-semibold mb-1">Control de versiones</h3>
+        <p class="text-sm text-gray-300">Git, GitHub, ramas, merge, commits y despliegue.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- PROYECTOS -->
+<section id="proyectos" class="scroll-mt-24 py-20 bg-[#0f172a] text-white px-6 md:px-20" data-aos="fade-up">
+
+  <div class="text-center mb-12">
+    <h2 class="text-4xl md:text-5xl font-extrabold text-purple-400 mb-2" data-aos="fade-down"># Proyectos</h2>
+    <p class="text-gray-400 text-sm md:text-base" data-aos="fade-up" data-aos-delay="100">Algunos desarrollos que he creado o participado</p>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+    <!-- Proyecto 1 -->
+    <div class="bg-[#1e1e2e] border border-[#3b4252] rounded-xl p-6 shadow-md hover:shadow-purple-500/30 transition-all duration-500 hover:-translate-y-1"
+         data-aos="zoom-in" data-aos-delay="100">
+      <h3 class="text-lg font-bold text-green-400 flex items-center gap-2 mb-3">
+        <i class="fab fa-laravel"></i> EcoSostenible
+      </h3>
+      <p class="text-gray-300 text-sm mb-4">Plataforma educativa sobre sostenibilidad ambiental con secciones dinámicas, foro, y perfil de usuario.</p>
+      <div class="flex flex-wrap gap-2 mb-3 text-xs">
+        <span class="bg-red-500/20 border border-red-400 text-red-300 px-2 py-1 rounded">Laravel</span>
+        <span class="bg-blue-500/20 border border-blue-400 text-blue-300 px-2 py-1 rounded">Tailwind CSS</span>
+        <span class="bg-yellow-500/20 border border-yellow-400 text-yellow-300 px-2 py-1 rounded">Blade</span>
+      </div>
+      <a href="https://github.com/jontj7/EcoSostenibleLaravel" target="_blank" class="text-blue-400 hover:underline text-sm">
+        → Código fuente
+      </a>
+    </div>
+
+    <!-- Proyecto 2 -->
+    <div class="bg-[#1e1e2e] border border-[#3b4252] rounded-xl p-6 shadow-md hover:shadow-purple-500/30 transition-all duration-500 hover:-translate-y-1"
+         data-aos="zoom-in" data-aos-delay="200">
+      <h3 class="text-lg font-bold text-indigo-400 flex items-center gap-2 mb-3">
+        <i class="fas fa-laptop-code"></i> Frontend Challenge
+      </h3>
+      <p class="text-gray-300 text-sm mb-4">Landing page responsiva y accesible creada en Alura Latam como parte de formación intensiva en HTML, CSS y JS.</p>
+      <div class="flex flex-wrap gap-2 mb-3 text-xs">
+        <span class="bg-orange-500/20 border border-orange-400 text-orange-300 px-2 py-1 rounded">HTML5</span>
+        <span class="bg-blue-500/20 border border-blue-400 text-blue-300 px-2 py-1 rounded">CSS3</span>
+        <span class="bg-yellow-300/20 border border-yellow-400 text-yellow-300 px-2 py-1 rounded">JavaScript</span>
+      </div>
+      <a href="https://github.com/jontj7/FrontEnd-Challenge" target="_blank" class="text-blue-400 hover:underline text-sm">
+        → Código fuente
+      </a>
+    </div>
+
+    <!-- Proyecto 3 -->
+    <div class="bg-[#1e1e2e] border border-[#3b4252] rounded-xl p-6 shadow-md hover:shadow-purple-500/30 transition-all duration-500 hover:-translate-y-1"
+         data-aos="zoom-in" data-aos-delay="300">
+      <h3 class="text-lg font-bold text-cyan-300 flex items-center gap-2 mb-3">
+        <i class="fas fa-terminal"></i> Dashboard CLI Style
+      </h3>
+      <p class="text-gray-300 text-sm mb-4">Interfaz tipo terminal para visualizar métricas de proyectos, basada en estilo consola, responsiva y ligera.</p>
+      <div class="flex flex-wrap gap-2 mb-3 text-xs">
+        <span class="bg-green-500/20 border border-green-400 text-green-300 px-2 py-1 rounded">Vue.js</span>
+        <span class="bg-gray-700/20 border border-gray-500 text-gray-300 px-2 py-1 rounded">API REST</span>
+        <span class="bg-teal-500/20 border border-teal-400 text-teal-300 px-2 py-1 rounded">Tailwind</span>
+      </div>
+      <a href="https://github.com/jontj7/Dashboard-Terminal" target="_blank" class="text-blue-400 hover:underline text-sm">
+        → Código fuente
+      </a>
+    </div>
+  </div>
+
+  <div class="text-center mt-10" data-aos="fade-up" data-aos-delay="400">
+    <a href="https://github.com/jontj7" target="_blank"
+      class="inline-block bg-[#1f2937] border border-purple-400 text-purple-300 px-6 py-2 rounded-md shadow hover:bg-purple-500 hover:text-black transition-all duration-300">
+      <i class="fab fa-github mr-2"></i>Ver más en GitHub
+    </a>
+  </div>
+</section>
+
+
+
+
+<!-- SOBRE MÍ -->
+<section id="sobre-mi" class="scroll-mt-24 py-20 bg-[#0f172a] text-white px-6 md:px-20" data-aos="fade-up">
+  <div class="text-center mb-12">
+    <h2 class="text-4xl md:text-5xl font-extrabold text-pink-400 mb-2" data-aos="fade-down"># Sobre mí</h2>
+    <p class="text-gray-400 text-sm md:text-base" data-aos="fade-up" data-aos-delay="100">Conóceme un poco más como persona y profesional</p>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-10 text-sm font-mono">
+    <!-- Bloque biografía -->
+    <div class="bg-[#1e1e2e] border border-[#3b4252] rounded-xl p-6 shadow-lg space-y-4" data-aos="fade-right" data-aos-delay="150">
+      <p class="text-gray-300">🎓 Soy estudiante de último año de <span class="text-green-300 font-semibold">Ingeniería en Desarrollo de Software</span>.</p>
+      <p class="text-gray-300">⚡ Me especializo en <span class="text-cyan-300">desarrollo Front-End</span> con enfoque en interfaces modernas, accesibles y responsivas.</p>
+      <p class="text-gray-300">💻 Tengo experiencia con tecnologías como <span class="text-yellow-300">React</span>, <span class="text-blue-300">Tailwind CSS</span>, <span class="text-red-400">Laravel</span> y <span class="text-purple-300">Vue.js</span>.</p>
+      <p class="text-gray-300">🚀 Me apasiona resolver problemas, aprender constantemente y trabajar en equipo.</p>
+    </div>
+
+    <!-- Bloque info rápida -->
+    <div class="grid grid-cols-2 gap-4" data-aos="fade-left" data-aos-delay="200">
+      <div class="bg-[#1e1e2e] border border-[#3b4252] rounded-xl p-4 text-center shadow transition-all duration-300 hover:scale-105">
+        <i class="fas fa-language text-2xl text-yellow-400 mb-2"></i>
+        <p class="text-gray-300">Idiomas</p>
+        <p class="text-white font-semibold">Español (nativo)</p>
+        <p class="text-white font-semibold">Inglés (intermedio)</p>
+      </div>
+      <div class="bg-[#1e1e2e] border border-[#3b4252] rounded-xl p-4 text-center shadow transition-all duration-300 hover:scale-105">
+        <i class="fas fa-users text-2xl text-green-400 mb-2"></i>
+        <p class="text-gray-300">Metodologías</p>
+        <p class="text-white font-semibold">Scrum & Agile</p>
+      </div>
+      <div class="bg-[#1e1e2e] border border-[#3b4252] rounded-xl p-4 text-center shadow transition-all duration-300 hover:scale-105">
+        <i class="fas fa-graduation-cap text-2xl text-cyan-300 mb-2"></i>
+        <p class="text-gray-300">Formación</p>
+        <p class="text-white font-semibold">ESFE/Ágape - 2025</p>
+      </div>
+      <div class="bg-[#1e1e2e] border border-[#3b4252] rounded-xl p-4 text-center shadow transition-all duration-300 hover:scale-105">
+        <i class="fas fa-star text-2xl text-pink-400 mb-2"></i>
+        <p class="text-gray-300">Cualidades</p>
+        <p class="text-white font-semibold">Autodidacta, Creativo, Responsable</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- CONTACTO -->
+<section id="contacto" class="scroll-mt-24 py-20 bg-[#0f172a] text-white px-6 md:px-20" data-aos="fade-up">
+  <div class="text-center mb-12">
+    <h2 class="text-4xl md:text-5xl font-extrabold text-yellow-300 mb-2" data-aos="fade-down"># Contacto</h2>
+    <p class="text-gray-400 text-sm md:text-base" data-aos="fade-up" data-aos-delay="100">¿Tienes un proyecto en mente? ¡Hablemos!</p>
+  </div>
+
+  <div class="grid md:grid-cols-2 gap-10 items-start">
+    
+    <!-- DATOS DE CONTACTO -->
+    <div class="bg-[#1e1e2e] border border-[#3b4252] rounded-xl p-6 shadow space-y-4 text-sm font-mono"
+         data-aos="fade-right" data-aos-delay="200">
+      <div class="flex items-center gap-3 text-green-300">
+        <i class="fas fa-envelope"></i>
+        <a href="mailto:jont_martinez@outlook.com" class="hover:underline">jont_martinez@outlook.com</a>
+      </div>
+      <div class="flex items-center gap-3 text-cyan-300">
+        <i class="fab fa-linkedin"></i>
+        <a href="https://linkedin.com/in/jonathan-martinez-23324413a" target="_blank" class="hover:underline">LinkedIn</a>
+      </div>
+      <div class="flex items-center gap-3 text-purple-300">
+        <i class="fab fa-github"></i>
+        <a href="https://github.com/jontj7" target="_blank" class="hover:underline">GitHub</a>
+      </div>
+      <div class="flex items-center gap-3 text-yellow-300">
+        <i class="fas fa-map-marker-alt"></i>
+        <span>Sonsonate, El Salvador</span>
+      </div>
+    </div>
+
+    <!-- MENSAJE -->
+    <div class="bg-[#1e1e2e] border border-[#3b4252] rounded-xl p-6 shadow text-center transition-all duration-300 hover:shadow-yellow-400/20"
+         data-aos="fade-left" data-aos-delay="300">
+      <blockquote class="text-gray-400 italic mb-6" data-aos="zoom-in" data-aos-delay="400">
+        “El código es mi lienzo. Cada línea, una solución; cada proyecto, una oportunidad.”
+      </blockquote>
+      <a href="mailto:jont_martinez@outlook.com"
+        class="inline-block bg-[#1f2937] border border-yellow-400 text-yellow-300 px-6 py-2 rounded-md shadow hover:bg-yellow-500 hover:text-black transition-all">
+        <i class="fas fa-paper-plane mr-2"></i>Enviar Mensaje
+      </a>
+    </div>
+  </div>
+</section>
+  </main>
+
+  <!-- SCRIPTS -->
+  <script>
+    AOS.init({ once: false, duration: 800, offset: 120, easing: 'ease-in-out' });
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/vanilla-tilt@1.7.3/dist/vanilla-tilt.min.js"></script>
+  <script>
+    VanillaTilt.init(document.querySelectorAll(".tilt"), {
+      max: 8,
+      speed: 400,
+      glare: true,
+      "max-glare": 0.2
+    });
+  </script>
+  <script>
+  window.addEventListener('resize', () => {
+    if (window.innerWidth >= 768) {
+      document.querySelector('body').__x.$data.open = true;
+    } else {
+      document.querySelector('body').__x.$data.open = false;
+    }
+  });
+</script>
+
+</body>
+</html>
